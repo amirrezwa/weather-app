@@ -1,22 +1,21 @@
 import './weatherCard.css';
 
 function WeatherCard({ weather }) {
-    const iconCode = weather.weather[0].icon;
-    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-  
-    return (
-      <div className="weather-card">
-        <h2>
-          {weather.name}, {weather.sys.country}
-        </h2>
-        <img src={iconUrl} alt={weather.weather[0].description} />
-        <p>دما: {weather.main.temp}°C</p>
+  const icon = weather.weather[0].icon;
+  const iconUrl = `https://openweathermap.org/img/wn/${icon}@4x.png`;
+
+  return (
+    <div className="weather-card">
+      <img src={iconUrl} alt={weather.weather[0].description} className="weather-icon" />
+      <h2>{weather.name}</h2>
+      <p className="description">{weather.weather[0].description}</p>
+      <p className="temp">{Math.round(weather.main.temp)}°C</p>
+      <div className="details">
         <p>رطوبت: {weather.main.humidity}%</p>
-        <p>وضعیت: {weather.weather[0].description}</p>
-        <p>باد: {weather.wind.speed} متر/ثانیه</p>
+        <p>باد: {weather.wind.speed} m/s</p>
       </div>
-    );
-  }
-  
-  export default WeatherCard;
-  
+    </div>
+  );
+}
+
+export default WeatherCard;

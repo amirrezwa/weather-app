@@ -1,50 +1,39 @@
-import { useState } from "react";
-import Search from "./components/search";
-import WeatherCard from "./components/weatherCard";
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import WeatherCard from './components/weatherCard';
+import Search from './components/search';
 
 function App() {
-  const [weather, setWeather] = useState(null);
-  const [error, setError] = useState("");
+  const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isDay, setIsDay] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchWeather = async (city) => {
+    const apiKey = 'YOUR_API_KEY'; // Replace with your actual OpenWeatherMap API key
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=fa`;
+
     try {
-      setError("");
-      setWeather(null);
       setLoading(true);
-
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3a0564d4b1fc49109c4215ecb5f80b10`
-      );
-
-      if (!res.ok) {
-        throw new Error("!شهر پیدا نشد");
-      }
-
-      const data = await res.json();
-      setWeather(data);
-
-      const currentTime = data.dt;
-      const sunrise = data.sys.sunrise;
-      const sunset = data.sys.sunset;
-      setIsDay(currentTime >= sunrise && currentTime <= sunset);
+      setError(null);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('شهر پیدا نشد!!!');
+      const data = await response.json();
+      setWeatherData(data);
     } catch (err) {
       setError(err.message);
+      setWeatherData(null);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={`app ${isDay ? "day" : "night"}`}>
-      <h1>وضعیت آب‌وهوا 🌤️</h1>
+    <div className={`app ${weatherData && weatherData.weather[0].icon.includes('n') ? 'night' : 'day'}`}>
+      <h1>وضعیت آب‌وهوا</h1>
       <Search onSearch={fetchWeather} />
-
-      {loading && <p>...در حال دریافت اطلاعات</p>}
+      {loading && <p className="loading">در حال دریافت اطلاعات...</p>}
       {error && <p className="error">{error}</p>}
-      {weather && !loading && <WeatherCard weather={weather} />}
+      {weatherData && <WeatherCard weather={weatherData} />}
     </div>
   );
 }

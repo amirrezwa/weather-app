@@ -1,18 +1,18 @@
+import { useState } from 'react';
 import './search.css';
-import { useState } from "react";
 
 function Search({ onSearch }) {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!city.trim()) return;
-    onSearch(city);
-    setCity("");
+    if (city.trim() !== '') {
+      onSearch(city);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="search-form">
+    <form className="search-box" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="...نام شهر را وارد کنید"
